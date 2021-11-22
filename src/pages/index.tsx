@@ -1,22 +1,39 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 
-import Greeter from '../artifacts/contracts/Greeter.sol/Greeter.json';
+import { NETWORKS } from '../constants';
+import MyEpicGame from '../artifacts/contracts/MyEpicGame.sol/MyEpicGame.json';
 import Layout from '../components/Layout';
 import { ExtLink } from '../components/Shared';
 
 // so typescript doesn't complain about `window.ethereum`
 declare let window: any;
 
-// greeter contract deployed on Rinkeby:
-// https://rinkeby.etherscan.io/address/0x4d18e9ADF506d8125736D166911219EE844ae347
-const GREETER_ADDRESS = '0x4d18e9ADF506d8125736D166911219EE844ae347';
+const PAGE_TITLE = 'epic NFT game';
 
 const HomePage: React.FC = () => {
-	const [greetingInput, setGreetingInput] = useState<string>('');
 	const [web3IsAvailable, setWeb3IsAvailable] = useState<boolean>(false);
 
-	// Check if browser has a wallet available
+	const connectAccount = async () => {
+		if (web3IsAvailable) {
+			try {
+				await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+				const { selectedAddress, networkVersion } = window.ethereum;
+				console.log('connected wallet:', {
+					address: selectedAddress,
+					networkName: NETWORKS[networkVersion] || 'Unknown network',
+					chainId: networkVersion,
+				});
+			} catch (error) {
+				console.error(error);
+			}
+		} else {
+			console.error('Error: No wallet detected in browser');
+		}
+	};
+
+	// Check for browser wallet on every render
 	useEffect(() => {
 		if (
 			typeof window !== 'undefined' &&
@@ -26,76 +43,27 @@ const HomePage: React.FC = () => {
 		}
 	}, []);
 
-	const requestAccount = async () => {
-		await window.ethereum.request({ method: 'eth_requestAccounts' });
-	};
-
-	const fetchGreeting = async () => {
-		if (web3IsAvailable) {
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const contract = new ethers.Contract(
-				GREETER_ADDRESS,
-				Greeter.abi,
-				provider
-			);
-
-			try {
-				const data = await contract.greet();
-				console.log('data: ', data);
-			} catch (error) {
-				console.error(error);
-			}
-		}
-	};
-
-	const setGreeting = async () => {
-		if (greetingInput === '') return;
-
-		if (web3IsAvailable) {
-			await requestAccount();
-
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const signer = provider.getSigner();
-			const contract = new ethers.Contract(
-				GREETER_ADDRESS,
-				Greeter.abi,
-				signer
-			);
-
-			const tx = await contract.setGreeting(greetingInput);
-			await tx.wait();
-			fetchGreeting();
-		}
-	};
-
-	// Event handlers
-	const onGreetingInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setGreetingInput(e.target.value);
-	};
-	const onFetchGreetingClick = () => fetchGreeting();
-	const onSetGreetingClick = () => setGreeting();
+	// Display message to user if no wallet detected in browser
+	if (!web3IsAvailable)
+		return (
+			<Layout title={`wallet | ${PAGE_TITLE}`}>
+				<h1>
+					please install{' '}
+					<a href="https://metamask.io" target="_blank">
+						metamask
+					</a>
+				</h1>
+			</Layout>
+		);
 
 	return (
-		<Layout title="dapp starter">
-			<h1>dapp starter</h1>
+		<Layout title={PAGE_TITLE}>
+			<h1>epic NFT game</h1>
 			<small>
 				by <ExtLink href="https://github.com/zhoug0x">zhoug</ExtLink>{' '}
 			</small>
-			<ul style={{ listStyle: 'none' }}>
-				<li>✅ next.js &amp; typescript</li>
-				<li>✅ styled-components</li>
-				<li>✅ hardhat</li>
-			</ul>
-			<input
-				type="text"
-				placeholder="set greeting"
-				value={greetingInput}
-				onChange={onGreetingInputChange}
-			/>
-			<button onClick={onSetGreetingClick}>set greeting</button>
-			<br />
-			<br />
-			<button onClick={onFetchGreetingClick}>fetch on-chain greeting</button>
+			<hr />
+			<button onClick={connectAccount}>connect wallet</button>
 		</Layout>
 	);
 };

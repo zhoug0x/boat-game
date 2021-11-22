@@ -3,14 +3,14 @@ import hre from 'hardhat';
 const main = async () => {
 	const gameContractFactory = await hre.ethers.getContractFactory('MyEpicGame');
 	const gameContract = await gameContractFactory.deploy(
-		['Leo', 'Aang', 'Pikachu'], // Names
+		['Bones', 'Fish', 'Nanner'], // Names
 		[
-			'https://i.imgur.com/pKd5Sdk.png', // Images
-			'https://i.imgur.com/xVu4vFL.png',
-			'https://i.imgur.com/WMB6g9u.png',
+			'https://i.imgur.com/zlGIwgm.png', // Images
+			'https://i.imgur.com/nfqoCC5.png',
+			'https://i.imgur.com/qaHfDsv.png',
 		],
-		[100, 200, 300], // HP values
-		[100, 50, 25] // Attack damage values
+		[1, 2, 3], // Stamina values
+		[10, 5, 3] // Strength values
 	);
 	await gameContract.deployed();
 	console.log('Contract deployed to:', gameContract.address);
