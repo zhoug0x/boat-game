@@ -14,6 +14,13 @@ const main = async () => {
 	);
 	await gameContract.deployed();
 	console.log('Contract deployed to:', gameContract.address);
+
+	console.log('Minting test character...');
+	const tx = await gameContract.mintCharacter(1);
+	await tx.wait();
+
+	const newTokenURI = await gameContract.tokenURI(1);
+	console.log('Mint complete! tokenURI:\n', newTokenURI);
 };
 
 const runMain = async () => {
