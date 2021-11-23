@@ -16,7 +16,7 @@ const main = async () => {
 	console.log('Contract deployed to:', gameContract.address);
 
 	console.log('Minting test character...');
-	const tx = await gameContract.mintCharacter(1);
+	const tx = await gameContract.mintCharacter(0);
 	await tx.wait();
 
 	const newTokenURI = await gameContract.tokenURI(1);

@@ -37,7 +37,7 @@ contract MyEpicGame is ERC721 {
 		uint256[] memory charStrengths
 	) ERC721('Buildspace NFT Game', 'GAME') {
 		// Generate the default character class template choices
-		for (uint256 i = 1; i < charNames.length; i++) {
+		for (uint256 i = 0; i < charNames.length; i++) {
 			charClassTemplates.push(
 				CharacterAttributes({
 					classKey: i,
@@ -46,6 +46,14 @@ contract MyEpicGame is ERC721 {
 					name: charNames[i],
 					imgURI: charImgURIs[i]
 				})
+			);
+
+			CharacterAttributes memory c = charClassTemplates[i];
+			console.log(
+				'\nclassKey: %s\nname: %s\nimg: %s\n---\n',
+				c.classKey,
+				c.name,
+				c.imgURI
 			);
 		}
 
