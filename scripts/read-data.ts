@@ -1,4 +1,3 @@
-import { LOADIPHLPAPI } from 'dns';
 import hre from 'hardhat';
 
 const main = async () => {
