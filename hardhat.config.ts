@@ -21,10 +21,10 @@ const hardhatConfig: HardhatUserConfig = {
 		hardhat: {
 			chainId: 1337,
 		},
-		// rinkeby: {
-		// 	url: process.env.INFURA_RINKEBY_URL,
-		// 	accounts: [`0x${process.env.PRIVATE_KEY}`],
-		// },
+		rinkeby: {
+			url: process.env.RINKEBY_URL,
+			accounts: [`0x${process.env.PRIVATE_KEY}`],
+		},
 	},
 };
 

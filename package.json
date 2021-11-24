@@ -8,8 +8,8 @@
 		"start": "next start",
 		"lint": "next lint",
 		"chain": "npx hardhat node",
-		"deploy": "npx hardhat run scripts/run.ts --network localhost",
-		"deploy:rinkeby": "npx hardhat run scripts/run.ts --network rinkeby"
+		"deploy": "npx hardhat run scripts/deploy.ts --network localhost",
+		"deploy:rinkeby": "npx hardhat run scripts/deploy.ts --network rinkeby"
 	},
 	"dependencies": {
 		"dotenv": "^10.0.0",
