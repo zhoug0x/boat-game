@@ -26,7 +26,7 @@ const main = async () => {
 
 	console.log('Fetching character data...');
 	const result = await gameContract.tokenURI(1);
-	console.log(`\ntoken data:\n${result}\n`);
+	console.log(`\ntoken data:\n\n${result}\n`);
 };
 
 const runMain = async () => {

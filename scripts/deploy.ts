@@ -1,11 +1,5 @@
 import hre from 'hardhat';
 
-// Current Rinkeby deploy:
-// https://rinkeby.etherscan.io/address/0xeabc0990f6efd805f0f9ea2435cb67e79f6b78bd
-
-// https://testnets.opensea.io/collection/buildspace-nft-game
-// https://rinkeby.rarible.com/token/0xeabc0990f6efd805f0f9ea2435cb67e79f6b78bd:1
-
 const main = async () => {
 	console.log('Deploying contract...');
 	const gameContractFactory = await hre.ethers.getContractFactory('MyEpicGame');

@@ -35,7 +35,7 @@ contract MyEpicGame is ERC721 {
 		string[] memory charImgURIs,
 		uint256[] memory charStaminas,
 		uint256[] memory charStrengths
-	) ERC721('Buildspace NFT Game', 'GAME') {
+	) ERC721('Cool NFT Game', 'COOL') {
 		// Generate the default character class template choices
 		for (uint256 i = 0; i < charNames.length; i++) {
 			charClassTemplates.push(
@@ -77,8 +77,6 @@ contract MyEpicGame is ERC721 {
 			imgURI: charTemplate.imgURI
 		});
 
-		// TODO: emit a 'Mint(address, classKey)' event?
-
 		// A convenience mapping to link the minter to their new character
 		addressToCharId[msg.sender] = newCharId;
 
@@ -92,23 +90,33 @@ contract MyEpicGame is ERC721 {
 		override
 		returns (string memory)
 	{
+		string memory description = 'deploy spam tryin to get it right';
+		string memory name = 'NFT Game';
+		string memory externalURL = 'https://buildspace.so';
+
 		CharacterAttributes memory char = charIdToAttributes[_tokenId];
 		string memory json = Base64.encode(
 			string(
 				abi.encodePacked(
-					'{"id": "',
-					Strings.toString(_tokenId),
-					'", "classKey": "',
-					Strings.toString(char.classKey),
-					'", "stamina": "',
-					Strings.toString(char.stamina),
-					'", "strength": "',
-					Strings.toString(char.strength),
-					'", "name": "',
-					char.name,
-					'", "imgURI": "',
+					'{"description":"',
+					description,
+					'","external_url":"',
+					externalURL,
+					'","image":"',
 					char.imgURI,
-					'"}'
+					'","name":"',
+					name,
+					' - #',
+					Strings.toString(_tokenId),
+					'/n'
+					'","attributes":[{',
+					'"trait_type":"Name","value":"',
+					char.name,
+					'"},{"trait_type":"Stamina","value":"',
+					Strings.toString(char.stamina),
+					'"},{"trait_type":"Strength","value":"',
+					Strings.toString(char.strength),
+					'"}]}'
 				)
 			)
 		);
