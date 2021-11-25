@@ -2,7 +2,7 @@ import hre from 'hardhat';
 
 const main = async () => {
 	console.log('Deploying contract...');
-	const gameContractFactory = await hre.ethers.getContractFactory('MyEpicGame');
+	const gameContractFactory = await hre.ethers.getContractFactory('BoatGame');
 	const gameContract = await gameContractFactory.deploy(
 		['Bones', 'Fish', 'Nanner'], // Names
 		[

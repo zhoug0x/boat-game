@@ -2,7 +2,7 @@ import hre from 'hardhat';
 
 const main = async () => {
 	console.log('Deploying contract...');
-	const gameContractFactory = await hre.ethers.getContractFactory('MyEpicGame');
+	const gameContractFactory = await hre.ethers.getContractFactory('BoatGame');
 	const gameContract = await gameContractFactory.deploy(
 		['Bones', 'Fish', 'Nanner'], // Names
 		[
@@ -16,12 +16,16 @@ const main = async () => {
 	await gameContract.deployed();
 	console.log('Contract deployed to:', gameContract.address);
 
-	console.log('Minting test character...');
-	const tx = await gameContract.mintCharacter(0);
-	await tx.wait();
+	let tx;
 
-	const newTokenURI = await gameContract.tokenURI(1);
-	console.log('Mint complete! tokenURI:\n', newTokenURI);
+	console.log('Minting test character...');
+	tx = await gameContract.mintCharacter(0);
+	await tx.wait();
+	console.log('Character minted');
+
+	console.log('Fetching character data...');
+	const result = await gameContract.tokenURI(1);
+	console.log(`\ntoken data:\n\n${result}\n`);
 };
 
 const runMain = async () => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 
 import { NETWORKS } from '../constants';
-import MyEpicGame from '../artifacts/contracts/MyEpicGame.sol/MyEpicGame.json';
+import BoatGame from '../artifacts/contracts/BoatGame.sol/BoatGame.json';
 import Layout from '../components/Layout';
 import { ExtLink } from '../components/Shared';
 
