@@ -44,7 +44,7 @@ contract BoatGame is ERC721 {
 		uint256 startingWaterLvl,
 		string memory boatName,
 		string memory boatImgURI
-	) ERC721('Boat Game', 'BOAT') {
+	) ERC721('A Boat Game', 'BOAT') {
 		theBoat = Boat({
 			waterLvl: startingWaterLvl,
 			maxWaterLvl: startingWaterLvl,
