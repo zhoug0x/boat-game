@@ -1,17 +1,5 @@
 import hre from 'hardhat';
 
-// current rink deploy:
-// 0xCc149A585934Cb1EB3D6845dD53Fa8C17dD365d7
-
-// on OS:
-// https://testnets.opensea.io/collection/boat-game-v4
-
-// validate on OS
-// https://testnets-api.opensea.io/asset/0xCc149A585934Cb1EB3D6845dD53Fa8C17dD365d7/1/validate
-
-// rarible:
-// https://rinkeby.rarible.com/token/0xCc149A585934Cb1EB3D6845dD53Fa8C17dD365d7:1
-
 const main = async () => {
 	console.log('Deploying contract...');
 	const gameContractFactory = await hre.ethers.getContractFactory('BoatGame');
@@ -35,25 +23,24 @@ const main = async () => {
 	let tx;
 	let results;
 
-	console.log('Minting test sailor...');
+	console.log('\nMinting test sailor...');
 	tx = await gameContract.mintCharacter(2);
 	await tx.wait();
-	console.log('sailor minted!');
+	console.log('sailor minted!\n');
 
 	results = await gameContract.tokenURI(1);
-	console.log('tokenURI before:\n', results);
+	console.log('tokenURI before:\n', results, '\n---\n');
 
 	console.log('Bailing water...');
 	tx = await gameContract.bailWater();
 	await tx.wait();
-	console.log('Water bailed!');
+	console.log('Water bailed!\n');
 
 	results = await gameContract.tokenURI(1);
-	console.log('tokenURI after:\n', results);
+	console.log('tokenURI after:\n', results, '\n---\n');
 
 	console.log('Fetching sailor data...');
 	const sailorData = await gameContract.getYourSailor();
-
 	console.log('Sailor:\n', sailorData);
 
 	console.log('\nComplete!\n\n');

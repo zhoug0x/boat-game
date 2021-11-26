@@ -13,7 +13,7 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
 });
 
 const hardhatConfig: HardhatUserConfig = {
-	solidity: '0.8.0',
+	solidity: '0.8.9',
 	paths: {
 		artifacts: './src/artifacts',
 	},
@@ -21,10 +21,10 @@ const hardhatConfig: HardhatUserConfig = {
 		hardhat: {
 			chainId: 1337,
 		},
-		rinkeby: {
-			url: process.env.RINKEBY_URL,
-			accounts: [`0x${process.env.PRIVATE_KEY}`],
-		},
+		// rinkeby: {
+		// 	url: process.env.RINKEBY_URL,
+		// 	accounts: [`0x${process.env.PRIVATE_KEY}`],
+		// },
 	},
 };
 

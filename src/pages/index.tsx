@@ -5,11 +5,14 @@ import { NETWORKS } from '../constants';
 import BoatGame from '../artifacts/contracts/BoatGame.sol/BoatGame.json';
 import Layout from '../components/Layout';
 import { ExtLink } from '../components/Shared';
+import SvgTwitterLogo from '../assets/twitter-logo.svg';
 
 // so typescript doesn't complain about `window.ethereum`
 declare let window: any;
 
-const PAGE_TITLE = 'epic NFT game';
+const PAGE_TITLE = 'BOAT GAME';
+const TWITTER_HANDLE = '_buildspace';
+const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 const HomePage: React.FC = () => {
 	const [web3IsAvailable, setWeb3IsAvailable] = useState<boolean>(false);
@@ -56,15 +59,42 @@ const HomePage: React.FC = () => {
 			</Layout>
 		);
 
+	// return (
+	// 	<Layout title={PAGE_TITLE}>
+	// 		<h1>BOAT GAME</h1>
+	// 		<small>
+	// 			by <ExtLink href="https://github.com/zhoug0x">zhoug</ExtLink>{' '}
+	// 		</small>
+	// 		<hr />
+	// 		<button onClick={connectAccount}>connect wallet</button>
+	// 	</Layout>
+	// );
+
 	return (
-		<Layout title={PAGE_TITLE}>
-			<h1>epic NFT game</h1>
-			<small>
-				by <ExtLink href="https://github.com/zhoug0x">zhoug</ExtLink>{' '}
-			</small>
-			<hr />
-			<button onClick={connectAccount}>connect wallet</button>
-		</Layout>
+		<div className="App">
+			<div className="container">
+				<div className="header-container">
+					<p className="header gradient-text">⚔️ Metaverse Slayer ⚔️</p>
+					<p className="sub-text">Team up to protect the Metaverse!</p>
+					<div className="connect-wallet-container">
+						<img
+							src="https://64.media.tumblr.com/tumblr_mbia5vdmRd1r1mkubo1_500.gifv"
+							alt="Monty Python Gif"
+						/>
+					</div>
+				</div>
+				<div className="footer-container">
+					<SvgTwitterLogo alt="Twitter Logo" />
+
+					<a
+						className="footer-text"
+						href={TWITTER_LINK}
+						target="_blank"
+						rel="noreferrer"
+					>{`built with @${TWITTER_HANDLE}`}</a>
+				</div>
+			</div>
+		</div>
 	);
 };
 

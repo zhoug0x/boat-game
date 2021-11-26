@@ -6,6 +6,11 @@ import '@openzeppelin/contracts/utils/Counters.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
 import './libraries/Base64.sol';
 
+// BOAT GAME
+
+// current rinkeby:
+// https://rinkeby.etherscan.io/address/0xd9581699e98a748ad746e09ba9945b879d1f0469
+
 contract BoatGame is ERC721 {
 	using Counters for Counters.Counter;
 
