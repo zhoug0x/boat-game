@@ -13,6 +13,7 @@ contract BoatGame is ERC721 {
 
 	struct Boat {
 		uint256 waterLvl;
+		uint256 maxWaterLvl;
 		uint256 actionCost;
 		string name;
 		string imgURI;
@@ -21,6 +22,7 @@ contract BoatGame is ERC721 {
 	struct Sailor {
 		uint256 classKey;
 		uint256 stamina;
+		uint256 maxStamina;
 		uint256 strength;
 		string className;
 		string imgURI;
@@ -39,14 +41,19 @@ contract BoatGame is ERC721 {
 		string[] memory charNames,
 		string[] memory charImgURIs,
 		uint256[] memory charStaminas,
-		uint256[] memory charStrengths
+		uint256[] memory charStrengths,
+		uint256 actionCost,
+		uint256 startingWaterLvl,
+		string memory boatName,
+		string memory boatImgURI
 	) ERC721('Boat Game', 'BOAT') {
-
-
-
-		// TODO: instantiate & assign the Boat here
-
-
+		theBoat = Boat({
+			waterLvl: startingWaterLvl,
+			maxWaterLvl: startingWaterLvl,
+			actionCost: actionCost,
+			name: boatName,
+			imgURI: boatImgURI
+		});
 
 		// Generate the default character class template choices
 		for (uint256 i = 0; i < charNames.length; i++) {
@@ -54,18 +61,19 @@ contract BoatGame is ERC721 {
 				Sailor({
 					classKey: i,
 					stamina: charStaminas[i],
+					maxStamina: charStaminas[i],
 					strength: charStrengths[i],
 					className: charNames[i],
 					imgURI: charImgURIs[i]
 				})
 			);
 
-			Sailor memory c = sailorClassTemplates[i];
+			Sailor memory sailor = sailorClassTemplates[i];
 			console.log(
 				'\nclassKey: %s\nclassName: %s\nimg: %s\n---\n',
-				c.classKey,
-				c.className,
-				c.imgURI
+				sailor.classKey,
+				sailor.className,
+				sailor.imgURI
 			);
 		}
 
@@ -74,6 +82,47 @@ contract BoatGame is ERC721 {
 	}
 
 	// ----------------------------------------------------------------------- functions
+
+	function bailWater() external {
+		require(theBoat.waterLvl > 0, 'No water left in boat, great job!');
+
+		uint256 sailorId = addressToSailorId[msg.sender];
+		Sailor storage sailorAttr = sailorIdToAttributes[sailorId];
+
+		require(
+			sailorAttr.stamina >= theBoat.actionCost,
+			'Not enough stamina to do action'
+		);
+
+		console.log(
+			'Player bailing water! %s strength & %s stamina...',
+			sailorAttr.strength,
+			sailorAttr.stamina
+		);
+		console.log('Boat has water level of %s', theBoat.waterLvl);
+
+		// Decumulate water level based on character strength
+		if (sailorAttr.strength > theBoat.waterLvl) {
+			theBoat.waterLvl = 0;
+		} else {
+			theBoat.waterLvl -= sailorAttr.strength;
+		}
+
+		// Decumulate spent action point from character stamina pool
+		sailorAttr.stamina -= theBoat.actionCost;
+
+		console.log(
+			'\nPlayer bailed %s water for %s stamina point(s)\n',
+			sailorAttr.strength,
+			theBoat.actionCost
+		);
+		console.log('Player has %s stamina remaining\n', sailorAttr.stamina);
+		console.log(
+			'Boat has %s water level remaining...\n--------\n',
+			theBoat.waterLvl
+		);
+	}
+
 	function mintCharacter(uint256 _classKey) external {
 		// Assign a token to the calling address
 		uint256 newSailorId = _tokenIds.current();
@@ -84,6 +133,7 @@ contract BoatGame is ERC721 {
 		sailorIdToAttributes[newSailorId] = Sailor({
 			classKey: _classKey,
 			stamina: charTemplate.stamina,
+			maxStamina: charTemplate.stamina,
 			strength: charTemplate.strength,
 			className: charTemplate.className,
 			imgURI: charTemplate.imgURI
@@ -120,12 +170,13 @@ contract BoatGame is ERC721 {
 					tokenName,
 					' - #',
 					Strings.toString(_tokenId),
-					'/n'
 					'","attributes":[{',
 					'"trait_type":"Class","value":"',
 					char.className,
 					'"},{"trait_type":"Stamina","value":"',
 					Strings.toString(char.stamina),
+					'","max_value":"',
+					Strings.toString(char.maxStamina),
 					'"},{"trait_type":"Strength","value":"',
 					Strings.toString(char.strength),
 					'"}]}'
@@ -133,6 +184,7 @@ contract BoatGame is ERC721 {
 			)
 		);
 
-		return string(abi.encodePacked('data:application/json;base64,', json));
+		// return string(abi.encodePacked('data:application/json;base64,', json));
+		return json;
 	}
 }

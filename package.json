@@ -8,6 +8,7 @@
 		"start": "next start",
 		"lint": "next lint",
 		"chain": "npx hardhat node",
+		"run": "npx hardhat run scripts/run.ts --network localhost",
 		"deploy": "npx hardhat run scripts/deploy.ts --network localhost",
 		"deploy:rinkeby": "npx hardhat run scripts/deploy.ts --network rinkeby"
 	},
