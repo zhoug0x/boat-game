@@ -1,13 +1,16 @@
 import hre from 'hardhat';
 
 // current rink deploy:
-// 0xAdC4D2F788Aff5d145Dc342C7c62cA83b6785732
+// 0xCc149A585934Cb1EB3D6845dD53Fa8C17dD365d7
 
 // on OS:
-// https://testnets.opensea.io/collection/boat-game
+// https://testnets.opensea.io/collection/boat-game-v4
+
+// validate on OS
+// https://testnets-api.opensea.io/asset/0xCc149A585934Cb1EB3D6845dD53Fa8C17dD365d7/1/validate
 
 // rarible:
-// https://rinkeby.rarible.com/token/0xAdC4D2F788Aff5d145Dc342C7c62cA83b6785732:1
+// https://rinkeby.rarible.com/token/0xCc149A585934Cb1EB3D6845dD53Fa8C17dD365d7:1
 
 const main = async () => {
 	console.log('Deploying contract...');
@@ -36,31 +39,19 @@ const main = async () => {
 	await tx.wait();
 	console.log('#1 minted...');
 
-	const results = await gameContract.tokenURI(1);
-	console.log(results);
-
-	return
-	
-
 	tx = await gameContract.mintCharacter(1);
 	await tx.wait();
 	console.log('#2 minted...');
 
-	tx = await gameContract.mintCharacter(2);
-	await tx.wait();
-	console.log('#3 minted...');
-
-	console.log('\nMinting complete\n');
-
 	console.log('Bailing water...');
 	tx = await gameContract.bailWater();
 	await tx.wait();
+	console.log('Water bailed!');
 
-	console.log('Bailing water again...');
-	tx = await gameContract.bailWater();
-	await tx.wait();
-
+	const results = await gameContract.tokenURI(2);
 	console.log('Complete!');
+	console.log('tokenURI:');
+	console.log(results);
 };
 
 const runMain = async () => {

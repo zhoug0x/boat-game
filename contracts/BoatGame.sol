@@ -173,18 +173,17 @@ contract BoatGame is ERC721 {
 					'","attributes":[{',
 					'"trait_type":"Class","value":"',
 					char.className,
-					'"},{"trait_type":"Stamina","value":"',
+					'"},{"trait_type":"Stamina","value":',
 					Strings.toString(char.stamina),
-					'","max_value":"',
+					',"max_value":',
 					Strings.toString(char.maxStamina),
-					'"},{"trait_type":"Strength","value":"',
+					'},{"trait_type":"Strength","value":',
 					Strings.toString(char.strength),
-					'"}]}'
+					'}]}'
 				)
 			)
 		);
 
-		// return string(abi.encodePacked('data:application/json;base64,', json));
-		return json;
+		return string(abi.encodePacked('data:application/json;base64,', json));
 	}
 }
