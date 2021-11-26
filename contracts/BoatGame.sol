@@ -6,8 +6,6 @@ import '@openzeppelin/contracts/utils/Counters.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
 import './libraries/Base64.sol';
 
-import 'hardhat/console.sol';
-
 contract BoatGame is ERC721 {
 	using Counters for Counters.Counter;
 
@@ -36,7 +34,7 @@ contract BoatGame is ERC721 {
 	mapping(uint256 => Sailor) public sailorIdToAttributes;
 	mapping(address => uint256) public addressToSailorId;
 
-	// ----------------------------------------------------------------------- constructor
+	// ---------------------------------------------------------------------------- constructor
 	constructor(
 		string[] memory charNames,
 		string[] memory charImgURIs,
@@ -67,22 +65,54 @@ contract BoatGame is ERC721 {
 					imgURI: charImgURIs[i]
 				})
 			);
-
-			Sailor memory sailor = sailorClassTemplates[i];
-			console.log(
-				'\nclassKey: %s\nclassName: %s\nimg: %s\n---\n',
-				sailor.classKey,
-				sailor.className,
-				sailor.imgURI
-			);
 		}
 
 		// Initialize counter to 1 so first minted character ID isn't 0
 		_tokenIds.increment();
 	}
 
-	// ----------------------------------------------------------------------- functions
+	// ---------------------------------------------------------------------------- events
 
+	event NewSailorMinted(address sender, uint256 tokenId, uint256 classKey);
+	event WaterBailed(
+		address sender,
+		uint256 tokenId,
+		uint256 waterAmount,
+		uint256 newWaterLvl,
+		uint256 newSailorStamina
+	);
+
+	// ---------------------------------------------------------------------------- view/pure
+	function getTheBoat() public view returns (Boat memory) {
+		return theBoat;
+	}
+
+	function getSailorClassTemplates() public view returns (Sailor[] memory) {
+		return sailorClassTemplates;
+	}
+
+	function getSailorByAddress(address _address)
+		public
+		view
+		returns (Sailor memory)
+	{
+		uint256 sailorId = addressToSailorId[_address];
+
+		// Check if a sailor ID is assigned to the address
+		if (sailorId > 0) {
+			return sailorIdToAttributes[sailorId];
+		} else {
+			// If no sailor, return empty sailor struct
+			Sailor memory emptySailor;
+			return emptySailor;
+		}
+	}
+
+	function getYourSailor() public view returns (Sailor memory) {
+		return getSailorByAddress(msg.sender);
+	}
+
+	// ---------------------------------------------------------------------------- tx
 	function bailWater() external {
 		require(theBoat.waterLvl > 0, 'No water left in boat, great job!');
 
@@ -94,13 +124,6 @@ contract BoatGame is ERC721 {
 			'Not enough stamina to do action'
 		);
 
-		console.log(
-			'Player bailing water! %s strength & %s stamina...',
-			sailorAttr.strength,
-			sailorAttr.stamina
-		);
-		console.log('Boat has water level of %s', theBoat.waterLvl);
-
 		// Decumulate water level based on character strength
 		if (sailorAttr.strength > theBoat.waterLvl) {
 			theBoat.waterLvl = 0;
@@ -111,15 +134,12 @@ contract BoatGame is ERC721 {
 		// Decumulate spent action point from character stamina pool
 		sailorAttr.stamina -= theBoat.actionCost;
 
-		console.log(
-			'\nPlayer bailed %s water for %s stamina point(s)\n',
+		emit WaterBailed(
+			msg.sender,
+			sailorId,
 			sailorAttr.strength,
-			theBoat.actionCost
-		);
-		console.log('Player has %s stamina remaining\n', sailorAttr.stamina);
-		console.log(
-			'Boat has %s water level remaining...\n--------\n',
-			theBoat.waterLvl
+			theBoat.waterLvl,
+			sailorAttr.stamina
 		);
 	}
 
@@ -128,7 +148,7 @@ contract BoatGame is ERC721 {
 		uint256 newSailorId = _tokenIds.current();
 		_safeMint(msg.sender, newSailorId);
 
-		// Set class template defaults to the new character record
+		// Use the class template to assign attributes to the newly minted character
 		Sailor memory charTemplate = sailorClassTemplates[_classKey];
 		sailorIdToAttributes[newSailorId] = Sailor({
 			classKey: _classKey,
@@ -139,21 +159,23 @@ contract BoatGame is ERC721 {
 			imgURI: charTemplate.imgURI
 		});
 
-		// A convenience mapping to link the minter to their new character
+		// Map the minter's address to the character token
 		addressToSailorId[msg.sender] = newSailorId;
 
-		// Prep the token ID for the next address that mints
+		// Iterate to the next token ID for the next character mint
 		_tokenIds.increment();
+
+		emit NewSailorMinted(msg.sender, newSailorId, _classKey);
 	}
 
+	// ---------------------------------------------------------------------------- tokenURI
 	function tokenURI(uint256 _tokenId)
 		public
 		view
 		override
 		returns (string memory)
 	{
-		string memory tokenDesc = 'A game regarding a boat';
-		string memory tokenName = 'Boat Game';
+		string memory tokenDesc = 'A game regarding a leaking boat';
 		string memory extURL = 'TBD';
 
 		Sailor memory char = sailorIdToAttributes[_tokenId];
@@ -166,9 +188,7 @@ contract BoatGame is ERC721 {
 					extURL,
 					'","image":"',
 					char.imgURI,
-					'","name":"',
-					tokenName,
-					' - #',
+					'","name":"Sailor #',
 					Strings.toString(_tokenId),
 					'","attributes":[{',
 					'"trait_type":"Class","value":"',

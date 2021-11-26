@@ -16,9 +16,9 @@ const main = async () => {
 	console.log('Deploying contract...');
 	const gameContractFactory = await hre.ethers.getContractFactory('BoatGame');
 	const gameContract = await gameContractFactory.deploy(
-		['Bones', 'Fish', 'Nanner'], // Sailor names
+		['Marine', 'Swabbie', 'Boatswain'], // Sailor class names
 		[
-			'https://i.imgur.com/zlGIwgm.png', // Sailor images
+			'https://i.imgur.com/zlGIwgm.png', // Sailor class images
 			'https://i.imgur.com/nfqoCC5.png',
 			'https://i.imgur.com/qaHfDsv.png',
 		],
@@ -32,26 +32,31 @@ const main = async () => {
 	await gameContract.deployed();
 	console.log('Contract deployed to:', gameContract.address);
 
-	console.log('Minting test characters...');
-
 	let tx;
-	tx = await gameContract.mintCharacter(0);
-	await tx.wait();
-	console.log('#1 minted...');
+	let results;
 
-	tx = await gameContract.mintCharacter(1);
+	console.log('Minting test sailor...');
+	tx = await gameContract.mintCharacter(2);
 	await tx.wait();
-	console.log('#2 minted...');
+	console.log('sailor minted!');
+
+	results = await gameContract.tokenURI(1);
+	console.log('tokenURI before:\n', results);
 
 	console.log('Bailing water...');
 	tx = await gameContract.bailWater();
 	await tx.wait();
 	console.log('Water bailed!');
 
-	const results = await gameContract.tokenURI(2);
-	console.log('Complete!');
-	console.log('tokenURI:');
-	console.log(results);
+	results = await gameContract.tokenURI(1);
+	console.log('tokenURI after:\n', results);
+
+	console.log('Fetching sailor data...');
+	const sailorData = await gameContract.getYourSailor();
+
+	console.log('Sailor:\n', sailorData);
+
+	console.log('\nComplete!\n\n');
 };
 
 const runMain = async () => {
