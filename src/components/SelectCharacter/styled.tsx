@@ -45,7 +45,6 @@ export const SelectCharacterContainer = styled.div`
 			&:hover {
 				opacity: 0.75;
 			}
-
 		}
 	}
 `;

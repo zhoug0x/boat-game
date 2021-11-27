@@ -5,14 +5,18 @@ import BoatGame from '../artifacts/contracts/BoatGame.sol/BoatGame.json';
 import Layout from '../components/Layout';
 import { ExtLink } from '../components/Shared';
 import SelectCharacter from '../components/SelectCharacter';
+import Arena from '../components/Arena';
+
+// so typescript doesn't complain about `window.ethereum`
+declare let window: any;
 
 // !!!!!!!
 // TODO:
 // CATCH WHEN WALLET ON WRONG CHAIN ID (any chain other than Rinkeby in this case)
 // !!!!!!!
 
-// so typescript doesn't complain about `window.ethereum`
-declare let window: any;
+// current deploy on OS
+// https://testnets.opensea.io/collection/a-boat-game
 
 const fetchCharacterData = async () => {
 	const { BOAT_CONTRACT_ADDR } = process.env;
@@ -71,9 +75,7 @@ const HomePage: React.FC = () => {
 	useEffect(() => {
 		if (activeAccount) {
 			fetchCharacterData().then(data => {
-				if (data) {
-					console.log('character data', data);
-				}
+				setActiveCharacter(data);
 			});
 		}
 	}, [activeAccount]);
@@ -138,6 +140,16 @@ const HomePage: React.FC = () => {
 			return (
 				<SelectCharacter
 					web3IsAvailable={web3IsAvailable}
+					setActiveCharacter={setActiveCharacter}
+				/>
+			);
+		}
+
+		// active account & associated character - time 2 play!
+		if (activeAccount && activeCharacter) {
+			return (
+				<Arena
+					activeCharacter={activeCharacter}
 					setActiveCharacter={setActiveCharacter}
 				/>
 			);
