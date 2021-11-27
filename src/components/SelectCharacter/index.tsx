@@ -29,6 +29,35 @@ const getCharacterClasses = async (gameContract: any) => {
 	}
 };
 
+const mintNewCharacter = async (gameContract: any, classKey: number) => {
+	try {
+		if (gameContract) {
+			alert(
+				'New character minting! standby for next alert, as there is no loading spinner lmao...'
+			);
+			const tx = await gameContract.mintCharacter(classKey);
+			await tx.wait();
+			alert('New character minted! Check the console for details...');
+		}
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+// handler for mint event emitted from chain
+const onNewSailorMinted = (sender: any, tokenId: any, classKey: any) => {
+	const newSailor = {
+		sender,
+		tokenId: tokenId?.toNumber(),
+		classKey: classKey?.toNumber(),
+	};
+
+	console.log('\nnew sailor minted!\n', newSailor);
+	alert(
+		`new sailor minted! address: ${sender}, classKey: ${classKey}, id: ${tokenId}`
+	);
+};
+
 const SelectCharacter = ({ web3IsAvailable, setActiveCharacter }: any) => {
 	const [characterClasses, setCharacterClasses] = useState<any>([]);
 	const [gameContract, setGameContract] = useState<any>();
@@ -56,20 +85,27 @@ const SelectCharacter = ({ web3IsAvailable, setActiveCharacter }: any) => {
 		}
 	}, []);
 
+	// Use gameContract when it becomes available
 	useEffect(() => {
 		if (gameContract) {
 			getCharacterClasses(gameContract).then(data => {
 				setCharacterClasses(data);
 			});
+
+			// connect event handler to Solidity mint event
+			gameContract.on('NewSailorMinted', onNewSailorMinted);
 		}
+
+		// Cleanup event handlers when component unmounts
+		return () => {
+			if (gameContract) {
+				gameContract.off('NewSailorMinted', onNewSailorMinted);
+			}
+		};
 	}, [gameContract]);
 
-	useEffect(() => {
-		console.info('available classes:', characterClasses);
-	}, [characterClasses]);
-
 	const handleMintClick = (classKey: number) => {
-		console.log('mint event for class key: ', classKey);
+		mintNewCharacter(gameContract, classKey);
 	};
 
 	return (
@@ -77,7 +113,7 @@ const SelectCharacter = ({ web3IsAvailable, setActiveCharacter }: any) => {
 			<h2>Mint your Sailor. Choose wisely...</h2>
 
 			<div className="character-container">
-				{characterClasses.length > 0 &&
+				{characterClasses?.length > 0 &&
 					characterClasses.map((charClass: any) => (
 						<div key={charClass.className}>
 							<div className="character-img-wrapper">

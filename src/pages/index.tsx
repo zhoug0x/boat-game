@@ -6,6 +6,11 @@ import Layout from '../components/Layout';
 import { ExtLink } from '../components/Shared';
 import SelectCharacter from '../components/SelectCharacter';
 
+// !!!!!!!
+// TODO:
+// CATCH WHEN WALLET ON WRONG CHAIN ID (any chain other than Rinkeby in this case)
+// !!!!!!!
+
 // so typescript doesn't complain about `window.ethereum`
 declare let window: any;
 
@@ -29,12 +34,12 @@ const fetchCharacterData = async () => {
 			// If account has a populated character record, parse and return the data
 			if (tx.className) {
 				return {
-					classKey: tx.classKey.toNumber(),
+					classKey: tx.classKey?.toNumber(),
 					className: tx.className,
 					imgURI: tx.imgURI,
-					stamina: tx.stamina.toNumber(),
-					maxStamina: tx.maxStamina.toNumber(),
-					strength: tx.strength.toNumber(),
+					stamina: tx.stamina?.toNumber(),
+					maxStamina: tx.maxStamina?.toNumber(),
+					strength: tx.strength?.toNumber(),
 				};
 			} else {
 				console.log('No character found...');
