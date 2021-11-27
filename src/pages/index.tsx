@@ -4,6 +4,8 @@ import { ethers } from 'ethers';
 import BoatGame from '../artifacts/contracts/BoatGame.sol/BoatGame.json';
 import Layout from '../components/Layout';
 import { ExtLink } from '../components/Shared';
+
+import LoadingIndicator from '../components/LoadingIndicator';
 import SelectCharacter from '../components/SelectCharacter';
 import Arena from '../components/Arena';
 
@@ -18,6 +20,7 @@ declare let window: any;
 // current deploy on OS
 // https://testnets.opensea.io/collection/a-boat-game
 
+// TODO: put this somwhere else
 const fetchCharacterData = async () => {
 	const { BOAT_CONTRACT_ADDR } = process.env;
 
@@ -60,6 +63,7 @@ const HomePage: React.FC = () => {
 	const [web3IsAvailable, setWeb3IsAvailable] = useState<boolean>(false);
 	const [activeAccount, setActiveAccount] = useState<string>();
 	const [activeCharacter, setActiveCharacter] = useState<any>();
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	// Check if browser is ready for web3
 	useEffect(() => {
@@ -73,15 +77,20 @@ const HomePage: React.FC = () => {
 
 	// Fetched connected account's character
 	useEffect(() => {
+		console.log(activeAccount);
+
 		if (activeAccount) {
+			setIsLoading(true);
 			fetchCharacterData().then(data => {
 				setActiveCharacter(data);
+				setIsLoading(false);
 			});
 		}
 	}, [activeAccount]);
 
 	const connectAccount = async () => {
 		if (web3IsAvailable) {
+			setIsLoading(true);
 			try {
 				const accounts = await window.ethereum.request({
 					method: 'eth_requestAccounts',
@@ -90,19 +99,24 @@ const HomePage: React.FC = () => {
 				if (accounts.length > 0) {
 					const account = accounts[0];
 					setActiveAccount(account);
-					console.info('Account connected!\n', account);
 				} else {
 					console.log('Error: No valid accounts found');
 				}
 			} catch (error) {
 				console.error(error);
 			}
+			setIsLoading(false);
 		} else {
 			console.error('Error: No wallet detected in browser');
 		}
 	};
 
 	const renderContent = () => {
+		if (isLoading) {
+			// return <LoadingIndicator />;
+			return <h1>LOADING</h1>;
+		}
+
 		// Display message to user if no wallet detected in browser
 		if (!web3IsAvailable) {
 			return (
@@ -129,7 +143,7 @@ const HomePage: React.FC = () => {
 						className="cta-button connect-wallet-button"
 						onClick={() => connectAccount()}
 					>
-						Connect Wallet
+						Connect Wallet to Rinkeby
 					</button>
 				</div>
 			);
@@ -161,7 +175,10 @@ const HomePage: React.FC = () => {
 			<div className="container">
 				<div className="header-container">
 					<p className="header gradient-text">⛵ BOAT GAME ⛵</p>
-					<p className="sub-text">a cooperative game involving a boat</p>
+					<p className="sub-text">
+						an untested, cooperative Rinkeby game involving a sinking boat
+					</p>
+
 					{renderContent()}
 				</div>
 				<div className="footer-container">

@@ -47,4 +47,26 @@ export const SelectCharacterContainer = styled.div`
 			}
 		}
 	}
+
+	.loading {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding-top: 75px;
+	}
+
+	.loading .indicator {
+		display: flex;
+	}
+
+	.loading .indicator p {
+		font-weight: bold;
+		font-size: 28px;
+		padding-left: 5px;
+	}
+
+	.loading img {
+		width: 450px;
+		padding-top: 25px;
+	}
 `;

@@ -3,7 +3,6 @@ import { ethers } from 'ethers';
 
 import BoatGame from '../../artifacts/contracts/BoatGame.sol/BoatGame.json';
 import { ArenaContainer } from './styled';
-import { takeCoverage } from 'v8';
 
 // TODO: this is duped, abstract away wallet/ethereum connection stuff
 // so typescript doesn't complain about `window.ethereum`
@@ -13,6 +12,7 @@ const Arena = ({ activeCharacter, setActiveCharacter }: any) => {
 	const [gameContract, setGameContract] = useState<any>();
 	const [boat, setBoat] = useState<any>();
 	const [actionState, setActionState] = useState<string>('');
+	const [showToast, setShowToast] = useState<any>();
 
 	// set boat game contract on each render <-- REFACTOR THIS
 	useEffect(() => {
@@ -108,6 +108,12 @@ const Arena = ({ activeCharacter, setActiveCharacter }: any) => {
 				await tx.wait();
 				console.log('bail tx', tx);
 				setActionState('success');
+
+				// show toast & timeout after 5 seconds
+				setShowToast(true);
+				setTimeout(() => {
+					setShowToast(false);
+				}, 5000);
 			}
 		} catch (error) {
 			console.error('bailWater() error:', error);
@@ -117,6 +123,12 @@ const Arena = ({ activeCharacter, setActiveCharacter }: any) => {
 
 	return (
 		<ArenaContainer>
+			{boat && activeCharacter && (
+				<div id="toast" className={showToast ? 'show' : ''}>
+					<div id="desc">{`✨ ${boat.name} had ${activeCharacter.attackDamage} water bailed out! 🎉`}</div>
+				</div>
+			)}
+
 			{boat !== undefined && (
 				<div className="boat-container">
 					<div className={`boat-content ${actionState}`}>
@@ -125,7 +137,7 @@ const Arena = ({ activeCharacter, setActiveCharacter }: any) => {
 							<img src={boat.imgURI} alt={`Boss ${boat.name}`} />
 							<div className="health-bar">
 								<progress value={boat.waterLvl} max={boat.maxWaterLvl} />
-								<p>{`${boat.waterLvl} / ${boat.waterLvl}`}</p>
+								<p>{`water level: ${boat.waterLvl} / ${boat.waterLvl}`}</p>
 							</div>
 						</div>
 					</div>
@@ -134,6 +146,11 @@ const Arena = ({ activeCharacter, setActiveCharacter }: any) => {
 							{`⚠️ BAIL OUT ${boat.name}`}
 						</button>
 					</div>
+					{actionState === 'bailing' && (
+						<div className="loading-indicator">
+							<h1>✨ Bailing water... 💪🌊</h1>
+						</div>
+					)}
 				</div>
 			)}
 
@@ -153,7 +170,7 @@ const Arena = ({ activeCharacter, setActiveCharacter }: any) => {
 										value={activeCharacter.stamina}
 										max={activeCharacter.maxStamina}
 									/>
-									<p>{`${activeCharacter.maxStamina} / ${activeCharacter.maxStamina} HP`}</p>
+									<p>{`${activeCharacter.stamina} / ${activeCharacter.maxStamina} stamina`}</p>
 								</div>
 							</div>
 							<div className="stats">

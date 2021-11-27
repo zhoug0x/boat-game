@@ -7,7 +7,7 @@ export const ArenaContainer = styled.div`
 	margin: auto;
 	color: black;
 
-	.arena-container .boat-container {
+	.boat-container {
 		display: flex;
 		flex-direction: column;
 		justify-content: space-around;

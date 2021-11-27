@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 
 export const LoadingContainer = styled.div`
+	outline: 1px solid red;
+
 	display: inline-block;
 	position: relative;
+	z-index: 999;
 	width: 80px;
 	height: 80px;
 
