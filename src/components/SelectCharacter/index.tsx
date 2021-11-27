@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 
-import BoatGame from '../../artifacts/contracts/BoatGame.sol/BoatGame.json';
+import BoatGame from '../../abi.json';
 import { SelectCharacterContainer } from './styled';
 
 // TODO: this is duped, abstract away wallet/ethereum connection stuff

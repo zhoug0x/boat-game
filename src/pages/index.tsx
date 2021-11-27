@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 
-import BoatGame from '../artifacts/contracts/BoatGame.sol/BoatGame.json';
+import BoatGame from '../abi.json';
 import Layout from '../components/Layout';
 import { ExtLink } from '../components/Shared';
 
-import LoadingIndicator from '../components/LoadingIndicator';
 import SelectCharacter from '../components/SelectCharacter';
 import Arena from '../components/Arena';
 
