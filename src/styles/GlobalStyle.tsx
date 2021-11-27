@@ -114,7 +114,7 @@ const GlobalStyle = createGlobalStyle`
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding-bottom: 30px;
+		padding: 30px 0 30px 0;
 	}
 
 	.footer-text {

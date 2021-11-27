@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
 
-import { NETWORKS } from '../constants';
 import BoatGame from '../artifacts/contracts/BoatGame.sol/BoatGame.json';
 import Layout from '../components/Layout';
 import { ExtLink } from '../components/Shared';
-import SvgTwitterLogo from '../assets/twitter-logo.svg';
+import SelectCharacter from '../components/SelectCharacter';
 
 // so typescript doesn't complain about `window.ethereum`
 declare let window: any;
 
 const PAGE_TITLE = 'BOAT GAME';
-const TWITTER_HANDLE = '_buildspace';
-const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 const HomePage: React.FC = () => {
 	const [web3IsAvailable, setWeb3IsAvailable] = useState<boolean>(false);
-	const [activeAccount, setActiveAccount] = useState<any>();
+	const [activeAccount, setActiveAccount] = useState<string>();
+	const [activeCharacter, setActiveCharacter] = useState<any>();
 
-	// Check if browser is web3-capable on every render
+	// Check if browser is ready for web3
 	useEffect(() => {
 		if (
 			typeof window !== 'undefined' &&
@@ -27,10 +24,6 @@ const HomePage: React.FC = () => {
 			setWeb3IsAvailable(true);
 		}
 	}, []);
-
-	useEffect(() => {
-		console.log('active account:\n', activeAccount);
-	}, [activeAccount]);
 
 	const connectAccount = async () => {
 		if (web3IsAvailable) {
@@ -42,6 +35,7 @@ const HomePage: React.FC = () => {
 				if (accounts.length > 0) {
 					const account = accounts[0];
 					setActiveAccount(account);
+					console.log('Account connected! ' + account);
 				} else {
 					console.log('Error: No valid accounts found');
 				}
@@ -53,18 +47,44 @@ const HomePage: React.FC = () => {
 		}
 	};
 
-	// Display message to user if no wallet detected in browser
-	if (!web3IsAvailable)
-		return (
-			<Layout title={`no wallet | ${PAGE_TITLE}`}>
-				<h1>
-					please install{' '}
-					<a href="https://metamask.io" target="_blank">
-						metamask
-					</a>
-				</h1>
-			</Layout>
-		);
+	const renderContent = () => {
+		// Display message to user if no wallet detected in browser
+		if (!web3IsAvailable) {
+			return (
+				<Layout title={`no wallet | ${PAGE_TITLE}`}>
+					<h1>
+						please install{' '}
+						<a href="https://metamask.io" target="_blank">
+							metamask
+						</a>
+					</h1>
+				</Layout>
+			);
+		}
+
+		// web3 available but no active user, show "connect wallet" prompt
+		if (!activeAccount) {
+			return (
+				<div className="connect-wallet-container">
+					<img
+						src="https://media.giphy.com/media/5qVezULI35guQ/giphy.gif"
+						alt="Boat Gif"
+					/>
+					<button
+						className="cta-button connect-wallet-button"
+						onClick={() => connectAccount()}
+					>
+						Connect Wallet
+					</button>
+				</div>
+			);
+		}
+
+		// account active but no character selected, show character selection view
+		if (activeAccount && !activeCharacter) {
+			return <SelectCharacter setCharacterNFT={setActiveCharacter} />;
+		}
+	};
 
 	return (
 		<div className="App">
@@ -72,21 +92,9 @@ const HomePage: React.FC = () => {
 				<div className="header-container">
 					<p className="header gradient-text">⛵ BOAT GAME ⛵</p>
 					<p className="sub-text">a cooperative game involving a boat</p>
-					<div className="connect-wallet-container">
-						<img
-							src="https://media.giphy.com/media/5qVezULI35guQ/giphy.gif"
-							alt="Boat Gif"
-						/>
-						<button
-							className="cta-button connect-wallet-button"
-							onClick={() => connectAccount()}
-						>
-							Connect Wallet
-						</button>
-					</div>
+					{renderContent()}
 				</div>
-
-				<div className="footer-container"></div>
+				<div className="footer-container">by zhoug</div>
 			</div>
 		</div>
 	);
