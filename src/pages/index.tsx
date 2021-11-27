@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ethers } from 'ethers';
 
 import BoatGame from '../artifacts/contracts/BoatGame.sol/BoatGame.json';
 import Layout from '../components/Layout';
@@ -7,6 +8,45 @@ import SelectCharacter from '../components/SelectCharacter';
 
 // so typescript doesn't complain about `window.ethereum`
 declare let window: any;
+
+const fetchCharacterData = async () => {
+	const { BOAT_CONTRACT_ADDR } = process.env;
+
+	if (BOAT_CONTRACT_ADDR !== undefined) {
+		try {
+			// Connect wallet to network
+			const provider = new ethers.providers.Web3Provider(window.ethereum);
+			const signer = provider.getSigner();
+			const gameContract = new ethers.Contract(
+				BOAT_CONTRACT_ADDR,
+				BoatGame.abi,
+				signer
+			);
+
+			// Fetch the character
+			const tx = await gameContract.getYourSailor();
+
+			// If account has a populated character record, parse and return the data
+			if (tx.className) {
+				const { classKey, className, imgURI, stamina, maxStamina, strength } =
+					tx;
+
+				return {
+					classKey,
+					className,
+					imgURI,
+					stamina: stamina.toNumber(),
+					maxStamina: maxStamina.toNumber(),
+					strength: strength.toNumber(),
+				};
+			} else {
+				console.log('No character found...');
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	}
+};
 
 const PAGE_TITLE = 'BOAT GAME';
 
@@ -25,6 +65,17 @@ const HomePage: React.FC = () => {
 		}
 	}, []);
 
+	// Fetched connected account's character
+	useEffect(() => {
+		if (activeAccount) {
+			fetchCharacterData().then(data => {
+				if (data) {
+					console.log('character data', data);
+				}
+			});
+		}
+	}, [activeAccount]);
+
 	const connectAccount = async () => {
 		if (web3IsAvailable) {
 			try {
@@ -35,7 +86,7 @@ const HomePage: React.FC = () => {
 				if (accounts.length > 0) {
 					const account = accounts[0];
 					setActiveAccount(account);
-					console.log('Account connected! ' + account);
+					console.info('Account connected!\n', account);
 				} else {
 					console.log('Error: No valid accounts found');
 				}

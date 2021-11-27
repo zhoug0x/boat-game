@@ -1,7 +1,6 @@
-import React from 'react';
 import styled from 'styled-components';
 
-const SelectCharacterContainer = styled.div`
+export const SelectCharacterContainer = styled.div`
 	width: 100%;
 	height: 100%;
 	display: flex;
@@ -60,13 +59,3 @@ const SelectCharacterContainer = styled.div`
 		font-size: 16px;
 	}
 `;
-
-const SelectCharacter = ({ setCharacterNFT }: any) => {
-	return (
-		<SelectCharacterContainer>
-			<h2>Mint Your Hero. Choose wisely.</h2>
-		</SelectCharacterContainer>
-	);
-};
-
-export default SelectCharacter;
