@@ -1,61 +1,51 @@
 import styled from 'styled-components';
 
 export const SelectCharacterContainer = styled.div`
-	width: 100%;
-	height: 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	color: white;
 
-	.select-character-container .character-grid {
-		width: 100%;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-		grid-template-rows: repeat(auto-fit, minmax(300px, 1fr));
-		grid-row-gap: 15px;
+	@media only screen and (min-width: 1140px) {
+		padding: 0 6rem;
 	}
 
-	.character-grid .character-item {
+	@media only screen and (min-width: 2560px) {
+		padding: 0 42rem;
+	}
+
+	> h2 {
+		margin: 4rem 0;
+	}
+
+	.character-container {
+		width: 100%;
+
 		display: flex;
-		flex-direction: column;
-		position: relative;
-		justify-self: center;
-		align-self: center;
-	}
+		justify-content: space-around;
 
-	.character-item img {
-		height: 300px;
-		width: 350px;
-		border-radius: 10px;
-		object-fit: cover;
-	}
+		& .character-img-wrapper {
+			margin-bottom: 0.5rem;
 
-	.character-item .name-container {
-		position: absolute;
-		background-color: #838383;
-		border-radius: 5px;
-		margin: 10px;
-	}
+			& > img {
+				border-radius: 20px;
+			}
+		}
 
-	.character-item .name-container p {
-		margin: 0;
-		padding: 5px 10px 5px 10px;
-		font-weight: bold;
-	}
+		& .character-mint-button {
+			cursor: pointer;
+			border: none;
+			border-radius: 5px;
+			padding: 0.5rem 0.75rem;
+			font-size: 1.25rem;
+			font-weight: bold;
+			color: #352016;
+			background: linear-gradient(90deg, #e06464 0%, #ff9500 100%);
 
-	.character-item .character-mint-button {
-		position: absolute;
-		bottom: 0;
-		width: 100%;
-		height: 40px;
-		border-bottom-left-radius: 10px;
-		border-bottom-right-radius: 10px;
-		border: none;
-		cursor: pointer;
-		background-color: rgb(32, 129, 226);
-		color: white;
-		font-weight: bold;
-		font-size: 16px;
+			&:hover {
+				opacity: 0.75;
+			}
+
+		}
 	}
 `;

@@ -28,16 +28,13 @@ const fetchCharacterData = async () => {
 
 			// If account has a populated character record, parse and return the data
 			if (tx.className) {
-				const { classKey, className, imgURI, stamina, maxStamina, strength } =
-					tx;
-
 				return {
-					classKey,
-					className,
-					imgURI,
-					stamina: stamina.toNumber(),
-					maxStamina: maxStamina.toNumber(),
-					strength: strength.toNumber(),
+					classKey: tx.classKey.toNumber(),
+					className: tx.className,
+					imgURI: tx.imgURI,
+					stamina: tx.stamina.toNumber(),
+					maxStamina: tx.maxStamina.toNumber(),
+					strength: tx.strength.toNumber(),
 				};
 			} else {
 				console.log('No character found...');
@@ -133,7 +130,12 @@ const HomePage: React.FC = () => {
 
 		// account active but no character selected, show character selection view
 		if (activeAccount && !activeCharacter) {
-			return <SelectCharacter setCharacterNFT={setActiveCharacter} />;
+			return (
+				<SelectCharacter
+					web3IsAvailable={web3IsAvailable}
+					setActiveCharacter={setActiveCharacter}
+				/>
+			);
 		}
 	};
 
@@ -145,7 +147,9 @@ const HomePage: React.FC = () => {
 					<p className="sub-text">a cooperative game involving a boat</p>
 					{renderContent()}
 				</div>
-				<div className="footer-container">by zhoug</div>
+				<div className="footer-container">
+					by:<ExtLink href="https://twitter.com/zhoug0x">zhoug</ExtLink>
+				</div>
 			</div>
 		</div>
 	);

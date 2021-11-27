@@ -5,7 +5,7 @@ const GlobalStyle = createGlobalStyle`
 		font-size: 16px;
 		font-family: sans-serif;
 		color: ${({ theme }) => theme.colors.text};
-		background-color: ${({ theme }) => theme.colors.background};
+		background: ${({ theme }) => theme.colors.background};
 	}
 	
 	a {
@@ -22,14 +22,13 @@ const GlobalStyle = createGlobalStyle`
 	// BOILERPLATE CSS BELOW 
 	.App {
 		height: 100vh;
-		background-color: #1e3147;
 		overflow: scroll;
 		text-align: center;
 	}
-
+	
 	.container {
 		height: 100%;
-		background-color: #1e3147;
+
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
@@ -115,13 +114,9 @@ const GlobalStyle = createGlobalStyle`
 		justify-content: center;
 		align-items: center;
 		padding: 30px 0 30px 0;
+		color: black;
 	}
 
-	.footer-text {
-		color: white;
-		font-size: 16px;
-		font-weight: bold;
-	}
 
 	/* KeyFrames */
 	@-webkit-keyframes gradient-animation {

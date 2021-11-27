@@ -6,7 +6,7 @@ const theme: DefaultTheme = {
 		text: '#333',
 		lightText: '#555',
 		link: 'dodgerblue',
-		background: '#FFF',
+		background: 'linear-gradient(175deg, dodgerblue 0%, lavender 100%)',
 	},
 };
 
