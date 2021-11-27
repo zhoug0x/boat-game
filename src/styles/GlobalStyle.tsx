@@ -22,14 +22,14 @@ const GlobalStyle = createGlobalStyle`
 	// BOILERPLATE CSS BELOW 
 	.App {
 		height: 100vh;
-		background-color: #0d1116;
+		background-color: #1e3147;
 		overflow: scroll;
 		text-align: center;
 	}
 
 	.container {
 		height: 100%;
-		background-color: #0d1116;
+		background-color: #1e3147;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;

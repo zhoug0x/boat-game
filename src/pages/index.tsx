@@ -16,27 +16,9 @@ const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 const HomePage: React.FC = () => {
 	const [web3IsAvailable, setWeb3IsAvailable] = useState<boolean>(false);
+	const [activeAccount, setActiveAccount] = useState<any>();
 
-	const connectAccount = async () => {
-		if (web3IsAvailable) {
-			try {
-				await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-				const { selectedAddress, networkVersion } = window.ethereum;
-				console.log('connected wallet:', {
-					address: selectedAddress,
-					networkName: NETWORKS[networkVersion] || 'Unknown network',
-					chainId: networkVersion,
-				});
-			} catch (error) {
-				console.error(error);
-			}
-		} else {
-			console.error('Error: No wallet detected in browser');
-		}
-	};
-
-	// Check for browser wallet on every render
+	// Check if browser is web3-capable on every render
 	useEffect(() => {
 		if (
 			typeof window !== 'undefined' &&
@@ -46,10 +28,35 @@ const HomePage: React.FC = () => {
 		}
 	}, []);
 
+	useEffect(() => {
+		console.log('active account:\n', activeAccount);
+	}, [activeAccount]);
+
+	const connectAccount = async () => {
+		if (web3IsAvailable) {
+			try {
+				const accounts = await window.ethereum.request({
+					method: 'eth_requestAccounts',
+				});
+
+				if (accounts.length > 0) {
+					const account = accounts[0];
+					setActiveAccount(account);
+				} else {
+					console.log('Error: No valid accounts found');
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		} else {
+			console.error('Error: No wallet detected in browser');
+		}
+	};
+
 	// Display message to user if no wallet detected in browser
 	if (!web3IsAvailable)
 		return (
-			<Layout title={`wallet | ${PAGE_TITLE}`}>
+			<Layout title={`no wallet | ${PAGE_TITLE}`}>
 				<h1>
 					please install{' '}
 					<a href="https://metamask.io" target="_blank">
@@ -59,40 +66,27 @@ const HomePage: React.FC = () => {
 			</Layout>
 		);
 
-	// return (
-	// 	<Layout title={PAGE_TITLE}>
-	// 		<h1>BOAT GAME</h1>
-	// 		<small>
-	// 			by <ExtLink href="https://github.com/zhoug0x">zhoug</ExtLink>{' '}
-	// 		</small>
-	// 		<hr />
-	// 		<button onClick={connectAccount}>connect wallet</button>
-	// 	</Layout>
-	// );
-
 	return (
 		<div className="App">
 			<div className="container">
 				<div className="header-container">
-					<p className="header gradient-text">⚔️ Metaverse Slayer ⚔️</p>
-					<p className="sub-text">Team up to protect the Metaverse!</p>
+					<p className="header gradient-text">⛵ BOAT GAME ⛵</p>
+					<p className="sub-text">a cooperative game involving a boat</p>
 					<div className="connect-wallet-container">
 						<img
-							src="https://64.media.tumblr.com/tumblr_mbia5vdmRd1r1mkubo1_500.gifv"
-							alt="Monty Python Gif"
+							src="https://media.giphy.com/media/5qVezULI35guQ/giphy.gif"
+							alt="Boat Gif"
 						/>
+						<button
+							className="cta-button connect-wallet-button"
+							onClick={() => connectAccount()}
+						>
+							Connect Wallet
+						</button>
 					</div>
 				</div>
-				<div className="footer-container">
-					<SvgTwitterLogo alt="Twitter Logo" />
 
-					<a
-						className="footer-text"
-						href={TWITTER_LINK}
-						target="_blank"
-						rel="noreferrer"
-					>{`built with @${TWITTER_HANDLE}`}</a>
-				</div>
+				<div className="footer-container"></div>
 			</div>
 		</div>
 	);
