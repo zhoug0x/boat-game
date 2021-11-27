@@ -1,5 +1,5 @@
 export const ExtLink: React.FC<any> = ({ children, ...props }) => (
-	<a {...props} target="_blank" rel="noreferrer noopener">
+	<a {...props} target="_blank" rel="noreferrer">
 		{children}
 	</a>
 );

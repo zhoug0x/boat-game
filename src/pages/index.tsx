@@ -122,7 +122,7 @@ const HomePage: React.FC = () => {
 				<Layout title={`no wallet | ${PAGE_TITLE}`}>
 					<h1>
 						please install{' '}
-						<a href="https://metamask.io" target="_blank">
+						<a href="https://metamask.io" target="_blank" rel="noreferrer">
 							metamask
 						</a>
 					</h1>
