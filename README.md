@@ -1,1 +1,3 @@
 # buildspace NFT game
+
+hella fast & sloppy frontend! TODO: refactor...
